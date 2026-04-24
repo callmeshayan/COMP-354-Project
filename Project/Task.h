@@ -23,5 +23,5 @@ public:
     void setRemainingBurst(int remaining);
 
     // Virtual function
-    virtual void execute() = 0;
+    virtual void execute();
 };

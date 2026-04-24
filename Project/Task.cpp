@@ -67,3 +67,13 @@ int Task::getRemainingBurst() const {
 void Task::setRemainingBurst(int remaining) {
     remaining_burst = remaining;
 }
+
+/**
+ * @brief Default execute implementation (no-op).
+ *
+ * Subclasses may override this for task-specific behaviour.
+ * FCFS and other schedulers drive execution via CPU::run().
+ */
+void Task::execute() {
+    // Default: execution is driven by the scheduler via CPU::run()
+}

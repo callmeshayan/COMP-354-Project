@@ -1,5 +1,6 @@
 #include "ScheduleFCFS.h"
 #include "ScheduleSJF.h"
+#include "ScheduleRR.h"
 #include "Task.h"
 #include "CPU.h"
 #include <iostream>
@@ -67,6 +68,30 @@ int main() {
 
     std::cout << "\n--- SJF Scheduling ---" << std::endl;
     sjfScheduler.schedule(cpu);
+
+    // Re-open file for RR
+    std::ifstream file3("tasks.txt");
+    RR rrScheduler(10);
+    while (std::getline(file3, line)) {
+        if (line.empty()) continue;
+        std::istringstream ss(line);
+        std::string name, priorityStr, burstStr;
+        std::getline(ss, name, ',');
+        std::getline(ss, priorityStr, ',');
+        std::getline(ss, burstStr);
+        auto trim = [](const std::string& s) {
+            size_t start = s.find_first_not_of(" \t");
+            return (start == std::string::npos) ? "" : s.substr(start);
+        };
+        name = trim(name);
+        int priority = std::stoi(trim(priorityStr));
+        int burst    = std::stoi(trim(burstStr));
+        rrScheduler.addTask(new Task(name, priority, burst));
+    }
+    file3.close();
+
+    std::cout << "\n--- Round Robin Scheduling (Quantum = 10) ---" << std::endl;
+    rrScheduler.schedule(cpu);
 
     return 0;
 }

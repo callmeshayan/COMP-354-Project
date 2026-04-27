@@ -1,4 +1,5 @@
 #include "ScheduleFCFS.h"
+#include "ScheduleSJF.h"
 #include "Task.h"
 #include "CPU.h"
 #include <iostream>
@@ -42,6 +43,30 @@ int main() {
 
     std::cout << "\n--- FCFS Scheduling ---" << std::endl;
     fcfsScheduler.schedule(cpu);
+
+    // Re-open file for SJF
+    std::ifstream file2("tasks.txt");
+    SJF sjfScheduler;
+    while (std::getline(file2, line)) {
+        if (line.empty()) continue;
+        std::istringstream ss(line);
+        std::string name, priorityStr, burstStr;
+        std::getline(ss, name, ',');
+        std::getline(ss, priorityStr, ',');
+        std::getline(ss, burstStr);
+        auto trim = [](const std::string& s) {
+            size_t start = s.find_first_not_of(" \t");
+            return (start == std::string::npos) ? "" : s.substr(start);
+        };
+        name = trim(name);
+        int priority = std::stoi(trim(priorityStr));
+        int burst    = std::stoi(trim(burstStr));
+        sjfScheduler.addTask(new Task(name, priority, burst));
+    }
+    file2.close();
+
+    std::cout << "\n--- SJF Scheduling ---" << std::endl;
+    sjfScheduler.schedule(cpu);
 
     return 0;
 }
